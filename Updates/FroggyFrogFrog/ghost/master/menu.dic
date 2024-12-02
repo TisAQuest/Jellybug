@@ -1,0 +1,641 @@
+﻿//---------------------------Menus--------------------------
+//This .dic file is primarily concerned with the double-click menus for each of your ghosts. If you don't want to have menus for your characters, you'd just have to delete the OnMouseDoubleClick functions near the end of mouse.dic and then ignore this file, as none of it will be called I believe. Menus can be cool though, since you can put stuff in them and create new functions if you know what you're doing. For example, I've added a lot of games and interactions and little linked icons to my Hunter Smoker ghost to keep track of their feelings and such. Much of that is pretty complicated though (and kind of messy, cough), so I won't go into it here, but I covered some of the concepts in the coding page of the walkthrough, and enterprising ghost makers can study the menu.dic file I set up for Hunter/Smoker and see how I put it together.
+
+//The complexity of this file depends on how customized you want your menus. If you just want to leave them as they are, then all you'll have to do is replace dialogue appropriately. Many of the options here can be ignored if you don't care. You only have to fill in the things that interest you! The default template dialogue will handle anything you don't. If you get bored or tired, you can skip a lot of these if it comes down to it. You can always go back and fill them in later too. Your ghost will function fine either way!
+
+//And of course, this file will always be waiting for you when you've gotten more familiar with ghosts and want to add cool features! It can be a flexible playground, but don't feel too stressed out about it. As mentioned, just fill in what comes to you and the template dialogue will cover the rest.
+
+
+
+//Make sure to read the walkthrough (http://www.ashido.com/ukagaka/) for more details about how to properly format ghost dialogue!
+//I will reiterate that you should be editing these in Notepad++, and in particular, you should set the Language to C (or Java I guess) to properly highlight all the text. It will make things A LOT EASIER for you, trust me! It will also help you keep track of your brackets in case you forget some. If you click on a line with a bracket in Notepad++, it should highlight where the other bracket ends, or turn purple if there's no finishing bracket (which you should definitely fix!)
+//It will also highlight my commented lines in green, so you'll know where they are. Any line beginning with // is a commented line that the code will not read. It's just for your reference!
+
+//If you see a big block of commented text you want to uncomment, highlight the text and then hit ctrl-shift-k in Notepad++ and that should uncomment it. Mostly this is intended for advanced users.
+
+
+//--OpenSakuraMenu
+//This is a bit of intro dialogue before the main character opens their menu. You can see below that there are three pieces of separate dialogue listed before it goes to MenuRun. The character will randomly choose one of those pieces of dialogue before opening the rest of their menu. You can customize this with individual greetings for the character, such as "Yes, %(username)?" or "Need something, %(username)?" or things like that. Note that none of the lines end with \e!
+//The \b2 tag tells the ghost to use their big balloon for this dialogue. If your menu has a lot of stuff, this'll probably look better than the small one.
+//If you don't want multiple responses before opening the menu, you can delete the dialogue and just leave MenuRun.
+
+OpenSakuraMenu
+{
+	if miniMode == 1
+		{
+		--
+		"\0\s[0]\b2\_qWhat are ya looking for?"
+		--
+		MenuRun
+		}
+	else
+		{
+		"\0\s[0]\b2Hiya %(username)! How can I help ya today, ribbit!."
+		"\0\s[0]\b2Ribbit! Whaddya need me for?"
+		"\0\s[0]\b2Anything ya need from me, ribbit? I'll help ya out!"
+		"\0\s[0]\b2Jellybug reporting for duty! What can I do for ya?"
+		"\0\s[0]\b2What's the plan for today, ribbit!"
+		--
+		MenuRun
+		}
+
+}
+
+//--MenuRun
+//As you just saw above. This actually fills out the rest of the menu. If you're going to be adding or changing functions, this is where you'll be doing your edits.
+
+MenuRun : all
+ {	
+	//froggyStart = 0
+ 	wd = GetWeekDay
+ 	ap = GetAP
+	//These four statements basically get the day of the week, whether it's AM or PM, the hour, and the time. It's putting together the information to display the time at the bottom of the balloon. Pay it no mind.
+	--
+	"\n\n\_q\b2" //The \n\n means two new lines as detailed in the walkthrough, and \_q means quick session, meaning all the text from this point on will display instantly instead of a few letters at a time like normal ghost dialogue. You can ignore it.
+	//--
+	//if lastTalk != "" //What this does is check to see if the ghost has already said a random bit of dialogue on its own, essentially by seeing if the lastTalk thing is NOT empty (!= means "does not equal").
+	{
+	//  "\![*]\q[Repeat Last Dialogue,OnLastTalk]\n\n[half]"
+	  //If the ghost has said something, it will then display this menu option. You can replace "Repeat Last Dialogue" with whatever caption you like, such as "What were you saying?" or "What did you say?" or "Could you repeat that?" or something like that.
+	  
+	  //*********************Advanced User Info*******************************
+	  //These text boxes are meant for those who have an interest in expanding or using more complicated functions in their ghost. Also for my own reference in the future since I plan on using this template too, haha. If you have no interest in any of this and just want to keep things as simple as possible, feel free to skip these boxes.
+	  
+	  //I briefly touched in bootend.dic about \q, but I'll again cover it here. Pay very close attention to how this bit of dialogue is formatted. You'll see it goes \![*]\q[Displayed Name,linkedfunction]. Breaking it down, \![*] puts the balloon's option icon in front of the choice (usually a > or something), \q sets up the choice, Displayed Name which is the text that will display in the ghost's balloon, then linkedfunction, which is what the choice is linked to when the user clicks it. As you go through this file, look at how every menu option is set up, and you will see they all follow this format, give or take a \![*]. If you're going to be adding new options to menus or creating your own functions and such, make sure you follow this format and learn it well. Make sure to read the coding page of the walkthrough.
+	  //***********************************************************************
+	}
+	--
+
+ 	"\![*]\q[Screentime Reminder,screentimetime]\n"
+	"\![*]\q[Pomodoro Timer,pomodoro]\n"
+        "\![*]\q[Work Session,workSession]\n\n[half]"
+
+	"\![*]\q[Mindfullness Break,breathCheck]\n"
+	"\![*]\q[Stretch Break,stretchcheck]\n"
+	"\![*]\q[Do Not Disturb,reset]\n\n[half]"
+	
+	//This option will force the ghost to say something from aitalk if the user clicks it. Just replace "Say something" with whatever caption you think would be appropriate.
+	//Advanced users, you can add multiple captions for any option you add to a menu you make just like this, as long as you separate it from the other options into its own section with two dashes above and below. Note that you can't do this if the Function above has ": all" after it, since that will put every potential option in. You'll have to set it your menu up differently to take --s into account. I commented it out here because of ": all" above, but you can see the basic idea.
+	--
+	"\![*]\q[Settings,dosomething]\n"
+ 	"\![*]\q[Nevermind,CANCEL]\n\n\n[half]\_q%(wd) %(nowhour):%(nowmin) %(ap), %(month)/%(day)/%(year)\e"
+	
+	//These three lead to the Config Menu, the Function menu, and Cancel. You can leave these alone if you like. All the envelopes at the end (see word.dic) basically display the year, month, day, weekday, and time.
+}
+
+//Leave this alone
+OnLastTalk 
+{
+"%(lastTalk)\e"
+}
+
+//This is figuring out what day of the week it is. Leave it alone.
+GetWeekDay
+{
+	if weekday == 0
+	{"Sun"}
+	elseif weekday == 1
+	{"Mon"}
+	elseif weekday == 2
+	{"Tue"}
+	elseif weekday == 3
+	{"Wed"}
+	elseif weekday == 4
+	{"Thu"}
+	elseif weekday == 5
+	{"Fri"}
+	else
+	{"Sat"}
+}
+
+//This is finding out whether it's AM or PM. Leave it alone.
+GetAP
+{
+ 	if hour >= 0 && hour <= 11
+ 		{"AM"}
+ 	else
+ 		{"PM"}
+}
+
+nowhour
+{
+	if hour12 == 0; "1"
+	else; "%(hour12)"
+}
+
+nowmin
+{
+	if minute >= 0 && minute <=9; "0%(minute)"
+	else; "%(minute)"
+}
+
+
+//If someone selects an option linked to BACKTOMENU, it will go back to MenuRun.
+//Advanced users, note that this is formatted as Select.linkedfunction? Remember how it went \q[Displayed Name,linkedfunction] above? When a user clicks an option that doesn't begin with On, they'll be linked to Select.linkedfunction. Pay close attention as we go through and you'll see this in action.
+
+Select.BACKTOMENU
+	{
+		MenuRun
+	}
+
+
+//*********************Advanced User Info*******************************
+//Some of you may be wondering why some of these Select.options lead to another function. Why not just put the config menu coding under Select.configmenu, instead of linking to TalkConfig?
+//Basically any function that's preceded with Select. is limited in its complexity and can only be called within its own .dic file in my experience. Why should you care, you ask? Well, if you're going to link to this function any other way, such as linking it in other .dic files or as a page in a menu, it needs to be a stand-alone function so it can be properly called. I'm pretty sure.
+//The basic jist is this; if you're going to reuse whatever it is the option leads to, you should make it its own function. Otherwise, you can leave it in Select.option. As a rule of thumb I'd probably put any complicated stuff in its own function, then use the Select.option to call the full function as you can see above. Simple dialogue responses to a choice can stay as a Select.option though (Like "Do you like going to raves and partying? Yes/No"). Study what stays as a Select.option and what links to another Function as we go through the file.
+//***********************************************************************
+
+
+//This is when the user chooses to change their name. It's linked to the functions outlined in nameteach.dic. Nothing to touch here.
+Select.TEACHNAME
+	{
+		OnTeachName	
+	}
+
+
+//If the user selects cancel in a menu. Replace as you like, or just leave them blank.
+Select.CANCEL
+	{
+	if miniMode == 1
+		{
+		"\0\s[0]\b[64]I'll wait here then!\e"
+		}
+	else
+		{
+
+		"\0\s[0]Alrighty, no biggie! I'll be here for when you're ready, ribbit!\e"
+		
+		"\0\s[0]Ribbit! I'll be here if you need me then!\e"
+		}
+ 	}
+
+	
+//In the MenuRun function above, if someone selects Functions (linked to dosomething), it will take them here to Select.dosomething.
+
+
+Select.dosomething : all
+{
+ 		//FunctionMenuIntros	
+		//this line ^ calls one of the intros above. If you are using the extra intros, you can uncomment this line.
+		
+		//the -- splits the intros and the menu choices
+		--
+		
+		//the actual menu options.
+		"\0\s[0]\b2" 
+	//This bit of dialogue sets up a large balloon and a quick session, like above, so all the text will appear immediately. The rest is formatted to display the information and options to change it. I wouldn't touch any of it if you don't know what you're doing.
+	//I'll briefly explain the font tags I used here. \f[bold,1] turns bold on, \f[bold,0] turns it off, not unlike a <b> tag. \f[sup,1] turns superscript on (making it tiny and above the text) and \f[sup,0] turns it off. I touch on these tags in the walkthrough on SakuraScript.
+	
+	
+	
+		"\_qYour name:\f[bold,0] %(username) \f[sup,1](\q[Change it?,TEACHNAME])\f[sup,0]\n\n"
+		{
+		"\![*]Mini mode enabled?\n\![*]\q[ON,miniON]\q[ OFF,miniOFF]\n\n[half]"
+		}	
+		{
+		"\![*]Enable Uninstall? (NOW : %(deleteshitai))\n\q[ON,deleteon] \q[OFF,deleteoff]\n\n[half]"
+		}
+		
+		"\![*]\q[Update,keroupdatecheck]\n"
+ 		"\![*]\q[Bug report,bugreport]\n"
+		"\![*]\q[Open SSP Preferences,sspconfig]\n"		
+		"\![*]\q[System Information,ChoiceSystemInformation]\n\n"
+ 		"\![*]\q[Back to main menu,BACKTOMENU]\e"
+}
+
+
+//When the user chooses SSP preferences. This will open the same window that shows up if you right click your ghost and go to Utilities - Preferences. You don't have to write dialogue here if you don't want to, the template's default dialogue will handle it, but it is an option.
+Select.sspconfig
+{
+	"\0\s[0]Opening the SSP config menu.\w8\![open,configurationdialog]\e"
+	
+	//Again, you can replace up to the \! tag.
+}
+
+
+
+
+//This is for the SAORI, don't touch it.
+OnGarbagecanEmpty
+{
+	_gomi = FUNCTIONEX("gomi.dll", "-f")
+}
+
+//This is when the user chooses System Information. Don't touch any of this either. For those curious though, note that this is done using another SAORI, this time saori_cpuid.dll.
+Select.ChoiceSystemInformation
+{
+	os_name = FUNCTIONEX("saori_cpuid.dll","os.name")
+	os_version = FUNCTIONEX("saori_cpuid.dll","os.version")
+	cpu_name = FUNCTIONEX("saori_cpuid.dll","cpu.name")
+	cpu_clockex = FUNCTIONEX("saori_cpuid.dll","cpu.clockex")
+	"/
+	\0\s[0]\b[2]/
+	\_q\f[bold,1]OS:\f[bold,0] %(os_name) %(os_version)\n/
+	\f[bold,1]Memory Load:\f[bold,0] %(memoryload)%\n/
+	\f[bold,1]Physical Memory:\f[bold,0] %(memoryavailphys) KB\n/
+	\f[bold,1]CPU:\f[bold,0] %(cpu_name) %(cpu_clockex)MHz\n/
+	\f[bold,1]Ukagaka:\f[bold,0] %property[baseware.version]/
+	\e"
+}
+	
+
+
+	
+//---- OnChoiceTimeout ---------------------------------------------------------
+//If the user is given a menu with choices, but doesn't pick one of the choices, it will eventually time out. At that point, they will say this dialogue. Replace with whatever you like, or leave it blank.
+
+OnChoiceTimeout
+ {
+
+if miniMode == 1
+				{
+				"\0\s[0]\b[64]I'll just wait for now\e"
+				}
+			else
+				{
+	"\0\s[0]Why don't ya take some time to decide what to do next, ribbit!\e"
+				}
+ }
+
+
+//This is when they select bug report. This is mostly meant to briefly give the user information about you, the creator, and how to report a problem to you. This can be handy if the person forgot where they got their ghost or how to contact you. Add whatever info you like here.
+Select.bugreport
+{
+"\0\s[20]Reporting a bug? Want to suggest a new feature? Email me at paavnisharma@gmail.com, or dm pause_pals on instagram\e"
+}
+
+//When clicked, this will automatically tell the ghost to check for updates. More detail on updates in etc.dic. You can leave this alone.
+Select.keroupdatecheck
+{
+	"\0\s[0]\![updatebymyself]\e"
+}
+
+//--Test Variable --------------------------------------------------------
+//I briefly mentioned the test variable in bootend.dic and possibly in etc.dic as well, I'm not sure. What exactly is the test variable? Basically, it's a place you can plug in anything you want to test out. While you can use Script Input to test most of your ghost's dialogue, there are some lines it just can't do, and it can't help you test choices. But the test variable can!
+//You can also use this to test functions as I mentioned above by adding \![raise,function] at the end of it, although you can do this with Script Input as well. Advanced Users, the test variable is also great for testing out any new stuff you may add to your ghost, like mode settings, item values, functions, raising or lowering numbers, what have you, particularly if you have a bunch you want to change all at once.
+
+//It is ALWAYS A GOOD IDEA to test your dialogue! If you won't check it with the test variable, at least test it with Script Input! It'll save you so much trouble!
+
+Select.testvariable
+{
+	"\0\s[0]Testing!\e"
+}
+
+Select.screentimetime
+{
+froggyStart=1
+screentime = 0
+aitalkinterval = 1200
+if miniMode == 1
+	{
+	"\0\s[0]\b[64]20 minutes start now!\e"
+	}
+else
+	{
+	--
+	"Alrighty, ribbit! I'll remind ya to look up every 20 minutes"
+	"I've gotcha covered girl! Your screen time starts now, ribbit!"
+	"Ribbit, got it girlypop! You can start working now!"
+	"Ribbit! Time to get to work then queen! I'll tell ya when it's time to look up!"
+	"You can count on me girl! I'll help ya out, ribbit!"
+	--
+	}
+}
+
+Select.pomodoro
+{
+froggyStart=2
+screentime = 0
+aitalkinterval = 1500
+pomodoro = 0
+if miniMode == 1
+	{
+	"\0\s[0]\b[64]Pomodoro starts now!\e"
+	}
+else
+	{
+--
+"Gotcha, Ribbit! You can go ahead and get to it!"
+"Working hard huh queen! You’ve totally got this, ribbit! I’ll help ya out!"
+"Pomodoro it is, ribbit! Get to work girlypop!"
+"Ribbit! Looks like it's time to lock in! I’m rooting for ya!"
+"I’ve gotcha covered girl! Your 25 minutes start now, ribbit!"
+--
+}
+}
+
+Select.workSession: all
+{
+froggyStart=3
+screentime = 0
+aitalkinterval = 1500
+pomodoro = 0
+ 	
+ 		"\0\s[0]\b2How long are ya gonna work for, ribbit?"
+ 		"\0\n\n[half]"
+ 		"\![*]\q[1 hour,1HOUR]\n"
+		"\![*]\q[2 hours,2HOUR]\n"
+ 		"\![*]\q[3 hours,3HOUR]\n"
+		"\![*]\q[4 hours,4HOUR]\n"
+ 		"\![*]\q[5 hours,5HOUR]\n\n[half]"
+
+}
+
+
+Select.1HOUR
+	{
+		workSession = 4
+		if miniMode == 1
+			{
+			"\0\s[0]\b[64]1 hour start now!\e"
+			}
+		else
+			{
+ 			"\0\s[0]Alrighty, 1 hour it is. Let's get to it, ribbit!\e"
+			}
+	}
+Select.2HOUR
+	{
+		workSession = 8
+if miniMode == 1
+ 			{
+			"\0\s[0]\b[64]2 hours start now!\e"
+			}
+		else
+			{
+ 			"\0\s[0]Alrighty, 2 hours it is. Let's get to it, ribbit!\e"
+			}
+	}
+Select.3HOUR
+	{
+		workSession = 12
+if miniMode == 1
+ 		{
+			"\0\s[0]\b[64]3 hours start now!\e"
+			}
+		else
+			{
+ 			"\0\s[0]Alrighty, 3 hours it is. Let's get to it, ribbit!\e"
+			}
+	}
+Select.4HOUR
+	{
+		workSession = 16
+if miniMode == 1
+		{
+			"\0\s[0]\b[64]4 hours start now!\e"
+			}
+		else
+			{
+ 			"\0\s[0]Alrighty, 4 hours it is. Let's get to it, ribbit!\e"
+			}
+	}
+Select.5HOUR
+	{
+		workSession = 20
+		if miniMode == 1
+ 		{
+			"\0\s[0]\b[64]5 hours start now!\e"
+			}
+		else
+			{
+ 			"\0\s[0]Alrighty, 5 hours it is. Let's get to it, ribbit!\e"
+			}
+
+	}
+
+
+Select.breathCheck
+	{
+	if froggyStart == 2 || froggyStart == 3
+		{
+		if aitalkinterval = 1500
+			{
+			if miniMode == 1
+				{
+				--
+ 			"\0\s[0]\b2\_qRibbit! Do ya wanna abandon your work session to start a 5 minute mindfullness break? Remember, once ya start one ya can't exit out of it til the 5 minutes are up./
+ 			\0\n\n[half]/
+ 			\![*]\q[Yes,breath]\n/
+			\![*]\q[No,CANCEL]\e"
+
+				}
+			else
+				{
+				--
+ 				"\0\s[0]\b2Ribbit! Do ya wanna abandon your work session to start a 5 minute mindfullness break? Remember, once ya start one ya can't exit out of it til the 5 minutes are up./
+ 				\0\n\n[half]/
+ 				\![*]\q[Yes,breath]\n/
+				\![*]\q[No,CANCEL]\e"
+				}
+			}
+		else
+			{
+			if miniMode == 1
+				{
+				"\0\s[0]\b2\_qRibbit! Do ya want to start a 5 minute mindfullness break? Remember, once ya start one ya can't exit out of it til the 5 minutes are up./
+ 				\0\n\n[half]/
+ 				\![*]\q[Yes,breath]\n/
+				\![*]\q[No,CANCEL]\e"
+
+				}		
+			else
+				{
+				--
+ 				"\0\s[0]\b2Ribbit! Do ya want to start a 5 minute mindfullness break? Remember, once ya start one ya can't exit out of it til the 5 minutes are up./
+ 				\0\n\n[half]/
+ 				\![*]\q[Yes,breath]\n/
+				\![*]\q[No,CANCEL]\e"
+				}
+			}
+		}
+	else
+		{
+		if miniMode == 1
+			{
+			"\0\s[0]\b2\_qRibbit! Do ya want to start a 5 minute mindfullness break? Remember, once ya start one ya can't exit out of it til the 5 minutes are up./
+ 			\0\n\n[half]/
+ 			\![*]\q[Yes,breath]\n/
+			\![*]\q[No,CANCEL]\e"
+
+			}
+		else
+			{
+			--
+ 			"\0\s[0]\b2Ribbit! Do ya want to start a 5 minute mindfullness break? Remember, once ya start one ya can't exit out of it til the 5 minutes are up./
+ 			\0\n\n[half]/
+ 			\![*]\q[Yes,breath]\n/
+			\![*]\q[No,CANCEL]\e"
+			}
+		}
+	}
+
+Select.breath
+	{
+	hold = aitalkinterval
+	aitalkinterval = 308
+	if aitalkinterval == 1500
+		{
+		froggyStart = 5
+		}
+	if hold == 1200 
+		{
+		screentime = 10
+		"\0\s[0]\_v[breathe.mp3]Alrighty, let's get to it girl! Since your using screentime reminders right now, your 20 minutes will now reset, ribbit!\w8\w8\w8\w8\e"
+		}
+	else 
+		{
+		"\0\s[0]Let's get to it, ribbit! Breath in when the note is high, and breath out when it's low.\w8\w8\w8\w8\_v[breathe.mp3]\e:chain=breathInBreathOut"
+		}
+	}
+
+breathInBreathOut
+{{CHAIN
+
+
+if miniMode == 1
+	{		
+	"\0\s[0]\b[64]Finished! Great job!\e"
+	}
+else
+{
+--
+"Ribbit! All done! Amazing work girlypop!\e:chain=end"
+"Hey queen, your mindfulless session is up! Try to keep these good vibes going now, ribbit!\e:chain=end"
+"Time's up, ribbit! Now that you're head is clear, you can set your mind to anything!\e:chain=end"
+"Ribbit! Girl you're good to go! Great job!\e:chain=end"
+"That's it bestie! I hope you're feeling a little bit better now, ribbit!\e:chain=end"
+--
+}
+
+aitalkinterval = hold 
+CHAIN}}
+
+Select.stretchcheck
+	{
+
+	if froggyStart == 2 || froggyStart == 3
+		{
+		if aitalkinterval = 1500
+			{
+			if miniMode == 1
+				{
+				--
+ 				"\0\s[0]\b2\_qRibbit! Do ya wanna abandon your work session to start a stretch break?/
+ 				\0\n\n[half]/
+ 				\![*]\q[Yes,stretch]\n/
+				\![*]\q[No,CANCEL]\e"
+				}
+			else
+				{
+				--
+ 				"\0\s[0]\b2Ribbit! Do ya wanna abandon your work session to start a stretch break?/
+ 				\0\n\n[half]/
+ 				\![*]\q[Yes,stretch]\n/
+				\![*]\q[No,CANCEL]\e"
+				}
+			}
+		else
+			{
+			Select.stretch
+			}
+		}
+	else
+		{
+		Select.stretch
+		}
+	}
+
+Select.stretch
+	{
+	count = 0
+	extra = 32
+	hold = aitalkinterval
+	aitalkinterval = 20
+
+	if aitalkinterval == 1500
+		{
+		froggyStart = 5
+		}
+	if froggyStart == 0
+		{
+		froggyStart = 5
+		--
+		"Looks like it's time for a stretch break, ribbit!"
+		"Okay diva, lets get to stretching then!"
+		"Gotcha girlypop, you're good to go, ribbit!"
+		"Ribbit! Great to see ya taking care of yourself girl! Let's go!"
+		"Ribbit! Let's get that blood pumping then bestie!"
+		--
+		}
+	if hold == 1200 
+		{
+		screentime = 10
+		"\0\s[0]Alright, let's get to it girl! Since your using screentime reminders right now, your 20 minutes will now reset, ribbit!\w8\w8\w8\w8\e"
+		}
+	else 
+		{
+
+		--
+		"Looks like it's time for a stretch break, ribbit!"
+		"Okay diva, lets get to stretching then!"
+		"Gotcha girlypop, you're good to go, ribbit!"
+		"Ribbit! Great to see ya taking care of yourself girl! Let's go!"
+		"Ribbit! Let's get that blood pumping then bestie!"
+		--
+		}
+	}
+
+Select.reset
+{
+count = 0 
+extra = 0
+hold = 0
+breath = 0
+pomodoro = 0
+screentime = 0
+froggyStart = 0
+workSession = 0
+if miniMode == 1
+	{
+	"\0\s[0]\b[64]Do not disturb is on!\e"
+	}
+else
+{
+"\0\s[0]Ribbit! You got it! I've reset everything, so I won't bother ya unless ya ask me for something!\e"
+}
+}
+
+Select.miniON
+{
+miniMode = 1
+"\0\s[0]\b[64]Mini mode on!\e"
+
+}
+
+Select.miniOFF
+{
+	miniMode = 0
+"\0\s[0]Mini mode has now been turned off, ribbit!\e"
+}
+
+
+//These two options toggle whether or not you can delete your ghost. Leave them alone.
+
+Select.deleteon
+{
+	deleteshitai = "ON"
+	TalkConfig
+}
+
+Select.deleteoff
+{
+	deleteshitai = "OFF"
+	TalkConfig
+}
+
+
+
+
+
+
